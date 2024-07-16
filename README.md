@@ -1,1 +1,2 @@
 # CentralizedLoggingAndTracingSolution
+### A simple solution when I demonstrated how to centralize the logging, tracing and metrics by saving them to db via action filter, middleware and open-telementry.
