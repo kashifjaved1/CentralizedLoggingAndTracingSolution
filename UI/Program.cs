@@ -9,11 +9,12 @@ using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+var configuration = builder.Configuration;
 
 // Add services to the container.
 services.AddHttpClient("MyApiClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:5001/");
+    client.BaseAddress = new Uri(configuration.GetValue<string>("ApiBaseAddress"));
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
 });
@@ -25,7 +26,7 @@ services.AddControllersWithViews(options =>
 services.AddTransient<ExceptionMiddleware>();
 
 services.AddDbContext<ActivityDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+    options.UseSqlServer(configuration.GetConnectionString("Default")));
 services.AddTransient<ILoggerService>(provider =>
     new LoggerService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>(), "MVC"));
 services.AddHttpContextAccessor();
