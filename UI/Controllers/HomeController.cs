@@ -27,8 +27,8 @@ namespace UI.Controllers
         {
             _loggerService.LogInformation("MVC: HomeController.Index() called with username: " + username);
 
-            var client = _clientFactory.CreateClient();
-            var response = await client.GetStringAsync($"http://localhost:5001/welcome/{username}");
+            var client = _clientFactory.CreateClient("MyApiClient");
+            var response = await client.GetStringAsync($"Welcome/{username}");
 
             ViewData["Message"] = response;
             return View();

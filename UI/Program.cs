@@ -11,6 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 // Add services to the container.
+services.AddHttpClient("MyApiClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 services.AddControllersWithViews(options =>
 {
     options.Filters.Add<ActionFilter>();
@@ -22,7 +29,6 @@ services.AddDbContext<ActivityDbContext>(options =>
 services.AddTransient<ILoggerService>(provider =>
     new LoggerService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>(), "MVC"));
 services.AddHttpContextAccessor();
-services.AddHttpClient();
 
 services.AddOpenTelemetry().WithTracing(bldr => bldr
 .AddAspNetCoreInstrumentation()
