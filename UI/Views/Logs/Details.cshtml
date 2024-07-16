@@ -1,0 +1,48 @@
+﻿@using UI.Data.ViewModels
+@model LogDetailViewModel
+
+<h2>Log Details</h2>
+
+<h3>Logs</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Log ID</th>
+            <th>Message</th>
+            <th>Log Level</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model.Logs)
+        {
+            <tr>
+                <td>@log.Id</td>
+                <td>@log.Message</td>
+                <td>@log.LogLevel</td>
+                <td>@log.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Traces</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Trace ID</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trace in Model.Traces)
+        {
+            <tr>
+                <td>@trace.Id</td>
+                <td>@trace.Message</td>
+                <td>@trace.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>

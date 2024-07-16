@@ -1,0 +1,26 @@
+﻿@using UI.Data.ViewModels
+@model IEnumerable<TraceViewModel>
+
+<h2>Traces</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Trace ID</th>
+            <th>Request ID</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trace in Model)
+        {
+            <tr>
+                <td>@trace.Id</td>
+                <td>@trace.RequestId</td>
+                <td>@trace.Message</td>
+                <td>@trace.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>
