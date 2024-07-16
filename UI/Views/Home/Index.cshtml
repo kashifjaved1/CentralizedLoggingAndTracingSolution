@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="username">Enter your name:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Your name">
+        </div>
+        <button type="submit" class="btn btn-primary">Get Welcome Message</button>
+    </form>
+    @if (ViewData["Message"] != null)
+    {
+        <p class="mt-3">@ViewData["Message"]</p>
+    }
+</div>
