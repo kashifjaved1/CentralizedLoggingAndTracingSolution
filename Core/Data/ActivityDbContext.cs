@@ -9,5 +9,8 @@ namespace Core.Data
 
         public DbSet<Log> Logs { get; set; }
         public DbSet<Trace> Traces { get; set; }
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<Response> Responses { get; set; }
+        public DbSet<Metric> Metrics { get; set; }
     }
 }

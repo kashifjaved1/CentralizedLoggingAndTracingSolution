@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Services.Implementation
 {
@@ -16,11 +18,11 @@ namespace Core.Services.Implementation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _serviceName;
 
-        public LoggerService(ActivityDbContext context, IHttpContextAccessor httpContextAccessor, string serviceName)
+        public LoggerService(ActivityDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-            _serviceName = serviceName;
+            _serviceName = _httpContextAccessor.HttpContext?.RequestServices.GetService<IWebHostEnvironment>()?.ApplicationName ?? "UnknownService";
         }
 
         public void LogInformation(string message)

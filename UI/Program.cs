@@ -23,12 +23,20 @@ services.AddControllersWithViews(options =>
 {
     options.Filters.Add<ActionFilter>();
 });
+
 services.AddTransient<ExceptionMiddleware>();
+services.AddTransient<RequestLoggingMiddleware>();
+services.AddTransient<ResponseLoggingMiddleware>();
+services.AddTransient<MetricsLoggingMiddleware>();
 
 services.AddDbContext<ActivityDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("Default")));
 services.AddTransient<ILoggerService>(provider =>
-    new LoggerService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>(), "MVC"));
+    new LoggerService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+services.AddTransient<IMetricsService>(provider =>
+    new MetricsService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+services.AddTransient<IRequestResponseService>(provider =>
+    new RequestResponseService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
 services.AddHttpContextAccessor();
 
 services.AddOpenTelemetry().WithTracing(bldr => bldr
@@ -50,6 +58,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<MetricsLoggingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ResponseLoggingMiddleware>();
 
 app.UseAuthorization();
 

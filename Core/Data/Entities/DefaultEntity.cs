@@ -10,7 +10,6 @@ namespace Core.Data.Entities
     public class DefaultEntity : BaseEntity
     {
         public Guid RequestId { get; set; }
-        public string Message { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }

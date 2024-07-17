@@ -1,0 +1,30 @@
+﻿@using UI.Data.ViewModels
+@model ResponseViewModel
+
+<h2>Response Details</h2>
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <td>@Model.Id</td>
+    </tr>
+    <tr>
+        <th>RequestId</th>
+        <td>@Model.RequestId</td>
+    </tr>
+    <tr>
+        <th>StatusCode</th>
+        <td>@Model.StatusCode</td>
+    </tr>
+    <tr>
+        <th>Headers</th>
+        <td>@Model.Headers</td>
+    </tr>
+    <tr>
+        <th>Body</th>
+        <td>@Model.Body</td>
+    </tr>
+    <tr>
+        <th>Timestamp</th>
+        <td>@Model.Timestamp</td>
+    </tr>
+</table>

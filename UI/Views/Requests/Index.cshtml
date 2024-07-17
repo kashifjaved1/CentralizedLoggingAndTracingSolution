@@ -1,0 +1,31 @@
+﻿@using UI.Data.ViewModels
+@model IEnumerable<RequestViewModel>
+
+<h2>Requests</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>RequestId</th>
+            <th>ServiceName</th>
+            <th>Url</th>
+            <th>Method</th>
+            <th>Timestamp</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in Model)
+        {
+            <tr>
+                <td>@request.Id</td>
+                <td>@request.RequestId</td>
+                <td>@request.ServiceName</td>
+                <td>@request.Url</td>
+                <td>@request.Method</td>
+                <td>@request.Timestamp</td>
+                <td><a href="@Url.Action("Details", new { id = request.Id })">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

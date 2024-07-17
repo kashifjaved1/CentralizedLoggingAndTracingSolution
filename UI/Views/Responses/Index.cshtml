@@ -1,0 +1,27 @@
+﻿@using UI.Data.ViewModels
+@model IEnumerable<ResponseViewModel>
+
+<h2>Responses</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>RequestId</th>
+            <th>StatusCode</th>
+            <th>Timestamp</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var response in Model)
+        {
+            <tr>
+                <td>@response.Id</td>
+                <td>@response.RequestId</td>
+                <td>@response.StatusCode</td>
+                <td>@response.Timestamp</td>
+                <td><a href="@Url.Action("Details", new { id = response.Id })">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,23 +1,30 @@
 ﻿@using UI.Data.ViewModels
-@model IEnumerable<MetricsViewModel>
+@model IEnumerable<MetricViewModel>
 
 <h2>Metrics</h2>
-
 <table class="table">
     <thead>
         <tr>
-            <th>Metric Name</th>
+            <th>Id</th>
+            <th>RequestId</th>
+            <th>ServiceName</th>
+            <th>MetricName</th>
             <th>Value</th>
             <th>Timestamp</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var metric in Model)
         {
             <tr>
+                <td>@metric.Id</td>
+                <td>@metric.RequestId</td>
+                <td>@metric.ServiceName</td>
                 <td>@metric.MetricName</td>
                 <td>@metric.Value</td>
                 <td>@metric.Timestamp</td>
+                <td><a href="@Url.Action("Details", new { id = metric.Id })">Details</a></td>
             </tr>
         }
     </tbody>
