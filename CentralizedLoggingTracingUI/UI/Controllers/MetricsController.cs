@@ -15,7 +15,9 @@ namespace UI.Controllers
 
         public IActionResult Index()
         {
-            var metrics = _context.Metrics
+            var metrics = _context
+                .Metrics
+                .OrderByDescending(m => m.Timestamp)
                 .Select(m => new MetricViewModel
                 {
                     Id = m.Id,

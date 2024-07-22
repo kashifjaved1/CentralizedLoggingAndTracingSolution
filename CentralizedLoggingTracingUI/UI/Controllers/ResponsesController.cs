@@ -15,7 +15,9 @@ namespace UI.Controllers
 
         public IActionResult Index()
         {
-            var responses = _context.Responses
+            var responses = _context
+                .Responses
+                .OrderByDescending(r => r.Timestamp)
                 .Select(r => new ResponseViewModel
                 {
                     Id = r.Id,

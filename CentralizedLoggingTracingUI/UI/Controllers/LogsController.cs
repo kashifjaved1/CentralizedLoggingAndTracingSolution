@@ -15,7 +15,10 @@ namespace UI.Controllers
 
         public IActionResult Index()
         {
-            var logs = _context.Logs.Select(log => new LogViewModel
+            var logs = _context
+                .Logs
+                .OrderByDescending(log => log.Timestamp)
+                .Select(log => new LogViewModel
             {
                 Id = log.Id,
                 RequestId = log.RequestId,
@@ -31,6 +34,7 @@ namespace UI.Controllers
         {
             var logs = _context.Logs
                 .Where(log => log.RequestId == requestId)
+                .OrderByDescending(log => log.Timestamp)
                 .Select(log => new LogViewModel
                 {
                     Id = log.Id,
@@ -42,6 +46,7 @@ namespace UI.Controllers
 
             var traces = _context.Traces
                 .Where(trace => trace.RequestId == requestId)
+                .OrderByDescending(log => log.Timestamp)
                 .Select(trace => new TraceViewModel
                 {
                     Id = trace.Id,

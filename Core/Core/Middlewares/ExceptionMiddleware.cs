@@ -22,9 +22,12 @@ namespace Core.Middlewares
             }
             catch (Exception ex)
             {
-                _loggerService.LogError($"Exception: {ex.Message}");
+                _loggerService.LogError($"Exception: {ex}");
                 using var activity = new ActivitySource("Exception Activity").StartActivity("Exception");
                 activity?.SetTag("Exception", ex.Message);
+
+                _loggerService.Trace(ex.Message);
+
                 throw;
             }
         }

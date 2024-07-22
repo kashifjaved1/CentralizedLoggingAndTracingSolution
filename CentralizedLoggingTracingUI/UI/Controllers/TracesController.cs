@@ -15,12 +15,15 @@ namespace UI.Controllers
 
         public IActionResult Index()
         {
-            var traces = _context.Traces.Select(trace => new TraceViewModel
+            var traces = _context
+                .Traces
+                .OrderByDescending(t => t.Timestamp)
+                .Select(t => new TraceViewModel
             {
-                Id = trace.Id,
-                RequestId = trace.RequestId,
-                Message = trace.Message,
-                Timestamp = trace.Timestamp
+                Id = t.Id,
+                RequestId = t.RequestId,
+                Message = t.Message,
+                Timestamp = t.Timestamp
             }).ToList();
 
             return View(traces);
