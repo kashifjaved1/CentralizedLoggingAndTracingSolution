@@ -24,6 +24,14 @@ services.AddControllersWithViews(options =>
     options.Filters.Add<ActionFilter>();
 });
 
+services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+services.AddTransient<TenantMiddleware>();
 services.AddTransient<ExceptionMiddleware>();
 services.AddTransient<RequestLoggingMiddleware>();
 services.AddTransient<ResponseLoggingMiddleware>();
@@ -37,6 +45,8 @@ services.AddTransient<IMetricsService>(provider =>
     new MetricsService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
 services.AddTransient<IRequestResponseService>(provider =>
     new RequestResponseService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+services.AddTransient<ITenantService>(provider =>
+    new TenantService(provider.GetRequiredService<ActivityDbContext>()));
 services.AddHttpContextAccessor();
 
 services.AddOpenTelemetry().WithTracing(bldr => bldr
@@ -57,6 +67,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
+
+app.UseMiddleware<TenantMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<MetricsLoggingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();

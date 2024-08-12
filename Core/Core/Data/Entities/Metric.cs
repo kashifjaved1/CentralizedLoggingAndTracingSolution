@@ -1,6 +1,6 @@
 ﻿namespace Core.Data.Entities
 {
-    public class Metric : DefaultEntity
+    public class Metric : DefaultTenantEntity
     {
         public string ServiceName { get; set; }
         public string MetricName { get; set; }

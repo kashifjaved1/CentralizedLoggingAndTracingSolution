@@ -1,6 +1,6 @@
 ﻿namespace Core.Data.Entities
 {
-    public class Response : DefaultEntity
+    public class Response : DefaultTenantEntity
     {
         public int StatusCode { get; set; }
         public string Headers { get; set; }

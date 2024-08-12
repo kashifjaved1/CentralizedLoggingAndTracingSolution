@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Core.Helpers;
 
 namespace Core.Services.Implementation
 {
@@ -29,7 +30,8 @@ namespace Core.Services.Implementation
         {
             var log = new Log
             {
-                RequestId = GetRequestId(),
+                TenantId = SessionHelper.GetTenantId(_httpContextAccessor),
+                RequestId = SessionHelper.GetRequestId(_httpContextAccessor),
                 ServiceName = _serviceName ?? string.Empty,
                 Message = $"{_serviceName}: {message}",
                 LogLevel = "Information",
@@ -43,7 +45,8 @@ namespace Core.Services.Implementation
         {
             var log = new Log
             {
-                RequestId = GetRequestId(),
+                TenantId = SessionHelper.GetTenantId(_httpContextAccessor),
+                RequestId = SessionHelper.GetRequestId(_httpContextAccessor),
                 ServiceName = _serviceName ?? string.Empty,
                 Message = $"{_serviceName}: {message}",
                 LogLevel = "Error",
@@ -57,31 +60,14 @@ namespace Core.Services.Implementation
         {
             var trace = new Trace
             {
-                RequestId = GetRequestId(),
+                TenantId = SessionHelper.GetTenantId(_httpContextAccessor),
+                RequestId = SessionHelper.GetRequestId(_httpContextAccessor),
                 Message = $"{_serviceName}: {message}",
                 Timestamp = DateTime.UtcNow
             };
             _context.Traces.Add(trace);
             _context.SaveChanges();
         }
-
-        #region Private Methods
-
-        private Guid GetRequestId()
-        {
-            if (_httpContextAccessor.HttpContext.Items.ContainsKey("RequestId"))
-            {
-                return (Guid)_httpContextAccessor.HttpContext.Items["RequestId"];
-            }
-            else
-            {
-                var requestId = Guid.NewGuid();
-                _httpContextAccessor.HttpContext.Items["RequestId"] = requestId;
-                return requestId;
-            }
-        }
-
-        #endregion
     }
 
 }

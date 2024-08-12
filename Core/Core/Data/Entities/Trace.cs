@@ -1,6 +1,6 @@
 ﻿namespace Core.Data.Entities
 {
-    public class Trace : DefaultEntity
+    public class Trace : DefaultTenantEntity
     {
         public string Message { get; set; }
     }

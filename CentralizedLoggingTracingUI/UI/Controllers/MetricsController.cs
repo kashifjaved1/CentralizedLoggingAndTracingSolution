@@ -1,10 +1,11 @@
 ﻿using Core.Data;
 using Microsoft.AspNetCore.Mvc;
+using UI.Controllers.Base;
 using UI.Data.ViewModels;
 
 namespace UI.Controllers
 {
-    public class MetricsController : Controller
+    public class MetricsController : BaseController
     {
         private readonly ActivityDbContext _context;
 

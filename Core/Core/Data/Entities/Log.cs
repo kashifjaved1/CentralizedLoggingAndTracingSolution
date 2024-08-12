@@ -1,6 +1,6 @@
 ﻿namespace Core.Data.Entities
 {
-    public class Log : DefaultEntity
+    public class Log : DefaultTenantEntity
     {
         public string ServiceName { get; set; }
         public string Message { get; set; }

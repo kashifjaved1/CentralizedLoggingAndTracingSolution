@@ -1,11 +1,12 @@
 ﻿using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using UI.Controllers.Base;
 using UI.Models;
 
 namespace UI.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly ILoggerService _loggerService;

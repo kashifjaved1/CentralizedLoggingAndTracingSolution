@@ -34,6 +34,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Responses" asp-action="Index">Responses</a>
                         </li>
+                        <li class="nav-item">
+                            <select id="tenantSelect" class="form-select">
+                                @foreach (var tenant in Model.Tenants)
+                                {
+                                    <option value="@tenant.Id">@tenant.Name</option>
+                                }
+                            </select>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -53,6 +61,24 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tenantSelect').change(function () {
+                var tenantId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("ChangeTenant", "Tenant")',
+                    type: 'POST',
+                    data: { tenantId: tenantId },
+                    success: function () {
+                        location.reload(); // Reloads content without refreshing the page
+                    },
+                    error: function () {
+                        alert('Failed to change tenant.');
+                    }
+                });
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

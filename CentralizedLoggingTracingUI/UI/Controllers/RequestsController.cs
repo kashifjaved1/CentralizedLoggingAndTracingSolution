@@ -1,10 +1,11 @@
 ﻿using Core.Data;
 using Microsoft.AspNetCore.Mvc;
+using UI.Controllers.Base;
 using UI.Data.ViewModels;
 
 namespace UI.Controllers
 {
-    public class RequestsController : Controller
+    public class RequestsController : BaseController
     {
         private readonly ActivityDbContext _context;
 

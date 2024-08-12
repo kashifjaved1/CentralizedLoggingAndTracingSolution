@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Core.Data;
 using Core.Data.Entities;
+using Core.Helpers;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,34 +30,18 @@ namespace Core.Services.Implementation
         public void LogRequest(Data.Entities.Request request)
         {
             request.ServiceName = _serviceName;
-            request.RequestId = GetRequestId();
+            request.RequestId = SessionHelper.GetRequestId(_httpContextAccessor);
+            request.TenantId = SessionHelper.GetTenantId(_httpContextAccessor);
             _context.Requests.Add(request);
             _context.SaveChanges();
         }
 
         public void LogResponse(Response response)
         {
-            response.RequestId = GetRequestId();
+            response.RequestId = SessionHelper.GetRequestId(_httpContextAccessor);
+            response.TenantId = SessionHelper.GetTenantId(_httpContextAccessor);
             _context.Responses.Add(response);
             _context.SaveChanges();
         }
-
-        #region Private Methods
-
-        private Guid GetRequestId()
-        {
-            if (_httpContextAccessor.HttpContext.Items.ContainsKey("RequestId"))
-            {
-                return (Guid)_httpContextAccessor.HttpContext.Items["RequestId"];
-            }
-            else
-            {
-                var requestId = Guid.NewGuid();
-                _httpContextAccessor.HttpContext.Items["RequestId"] = requestId;
-                return requestId;
-            }
-        }
-
-        #endregion
     }
 }

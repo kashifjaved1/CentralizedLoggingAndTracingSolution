@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using Core.Data.Entities;
+using Core.Helpers;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +30,8 @@ namespace Core.Services.Implementation
         {
             var metric = new Metric
             {
-                RequestId = GetRequestId(),
+                TenantId = SessionHelper.GetTenantId(_httpContextAccessor),
+                RequestId = SessionHelper.GetRequestId(_httpContextAccessor),
                 ServiceName = _serviceName,
                 MetricName = metricName,
                 Value = $"{value} ms",
@@ -39,23 +41,5 @@ namespace Core.Services.Implementation
             _context.Metrics.Add(metric);
             _context.SaveChanges();
         }
-
-        #region Private Methods
-
-        private Guid GetRequestId()
-        {
-            if (_httpContextAccessor.HttpContext.Items.ContainsKey("RequestId"))
-            {
-                return (Guid)_httpContextAccessor.HttpContext.Items["RequestId"];
-            }
-            else
-            {
-                var requestId = Guid.NewGuid();
-                _httpContextAccessor.HttpContext.Items["RequestId"] = requestId;
-                return requestId;
-            }
-        }
-
-        #endregion
     }
 }
