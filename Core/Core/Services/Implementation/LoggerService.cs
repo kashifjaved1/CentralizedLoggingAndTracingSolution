@@ -26,7 +26,7 @@ namespace Core.Services.Implementation
             _serviceName = _httpContextAccessor.HttpContext?.RequestServices.GetService<IWebHostEnvironment>()?.ApplicationName ?? "UnknownService";
         }
 
-        public void LogInformation(string message)
+        public async void LogInformation(string message)
         {
             var log = new Log
             {
@@ -38,10 +38,10 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
             _context.Logs.Add(log);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void LogError(string message)
+        public async void LogError(string message)
         {
             var log = new Log
             {
@@ -53,10 +53,10 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
             _context.Logs.Add(log);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Trace(string message)
+        public async void Trace(string message)
         {
             var trace = new Trace
             {
@@ -66,7 +66,7 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
             _context.Traces.Add(trace);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 

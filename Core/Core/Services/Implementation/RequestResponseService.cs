@@ -27,21 +27,21 @@ namespace Core.Services.Implementation
             _serviceName = _httpContextAccessor.HttpContext?.RequestServices.GetService<IWebHostEnvironment>()?.ApplicationName ?? "UnknownService";
         }
 
-        public void LogRequest(Data.Entities.Request request)
+        public async void LogRequest(Data.Entities.Request request)
         {
             request.ServiceName = _serviceName;
             request.RequestId = SessionHelper.GetRequestId(_httpContextAccessor);
             request.TenantId = SessionHelper.GetTenantId(_httpContextAccessor);
             _context.Requests.Add(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void LogResponse(Response response)
+        public async void LogResponse(Response response)
         {
             response.RequestId = SessionHelper.GetRequestId(_httpContextAccessor);
             response.TenantId = SessionHelper.GetTenantId(_httpContextAccessor);
             _context.Responses.Add(response);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

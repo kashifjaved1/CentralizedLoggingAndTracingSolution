@@ -91,7 +91,8 @@ namespace Core.Migrations
                 name: "Tenants",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Identifier = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -121,10 +122,10 @@ namespace Core.Migrations
                 columns: new[] { "Id", "Identifier", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0966b9f3-27f1-48c4-b8c3-897508ecc055"), "tenant2", "Tenant 2" },
-                    { new Guid("908d6712-e64e-4303-9f73-510fd6dad109"), "tenant1", "Tenant 1" },
-                    { new Guid("d0bcbbaf-69fc-4b63-adbf-c2fdecaeda36"), "tenant3", "Tenant 3" },
-                    { new Guid("ea4c7b2e-609f-46b1-8389-8d3527312a6b"), "tenant4", "Tenant 4" }
+                    { 1, "default", "Default" },
+                    { 2, "tenant1", "Tenant 1" },
+                    { 3, "tenant2", "Tenant 2" },
+                    { 4, "tenant3", "Tenant 3" }
                 });
         }
 

@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Core.Services.Interfaces
+@inject ITenantService TenantService
+@{
+    var tenants = await TenantService.GetTenants();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -36,7 +42,8 @@
                         </li>
                         <li class="nav-item">
                             <select id="tenantSelect" class="form-select">
-                                @foreach (var tenant in Model.Tenants)
+                                <option disabled="disabled" selected="selected">Select Tenant</option>
+                                @foreach (var tenant in tenants)
                                 {
                                     <option value="@tenant.Id">@tenant.Name</option>
                                 }
@@ -70,7 +77,7 @@
                     type: 'POST',
                     data: { tenantId: tenantId },
                     success: function () {
-                        location.reload(); // Reloads content without refreshing the page
+                        // location.reload(); // Reloads content without refreshing the page
                     },
                     error: function () {
                         alert('Failed to change tenant.');

@@ -4,12 +4,12 @@ namespace UI.Controllers.Base
 {
     public class BaseController : Controller
     {
-        protected Guid TenantId
+        protected int TenantId
         {
             get
             {
-                var tenantId = HttpContext.Session.GetString("TenantId");
-                return tenantId != null ? Guid.Parse(tenantId) : Guid.Empty;
+                var tenantId = HttpContext.Request.Cookies["TenantId"];
+                return tenantId != null ? int.Parse(tenantId) : 1;
             }
         }
     }

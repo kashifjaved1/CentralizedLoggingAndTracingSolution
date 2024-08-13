@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace Core.Helpers
@@ -7,24 +9,27 @@ namespace Core.Helpers
     {
         public static Guid GetRequestId(IHttpContextAccessor httpContextAccessor)
         {
-            if (httpContextAccessor.HttpContext.Items.ContainsKey("RequestId"))
+            var httpContextItems = httpContextAccessor?.HttpContext?.Items;
+            var isRequestIdAvailable = httpContextItems.ContainsKey("RequestId");
+            if (!string.IsNullOrEmpty(isRequestIdAvailable.ToString()) && isRequestIdAvailable)
             {
-                return (Guid)httpContextAccessor.HttpContext.Items["RequestId"];
+                return (Guid)httpContextItems["RequestId"];
             }
             else
             {
                 var requestId = Guid.NewGuid();
-                httpContextAccessor.HttpContext.Items["RequestId"] = requestId;
+                httpContextItems["RequestId"] = requestId;
                 return requestId;
             }
         }
 
         public static string GetTenantId(IHttpContextAccessor httpContextAccessor)
         {
-            var tenantId = httpContextAccessor?.HttpContext?.Session.GetString("TenantId");
+            //var tenantId = httpContextAccessor?.HttpContext?.Session.GetString("TenantId");
+            var tenantId = httpContextAccessor?.HttpContext?.Request.Cookies["TenantId"];
             if (string.IsNullOrEmpty(tenantId))
             {
-                return Guid.Empty.ToString();
+                return 1.ToString(); // The default tenant;
             }
 
             return tenantId;

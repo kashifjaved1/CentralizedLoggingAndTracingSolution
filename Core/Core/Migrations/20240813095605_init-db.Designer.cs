@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(ActivityDbContext))]
-    [Migration("20240812170328_init-db")]
+    [Migration("20240813095605_init-db")]
     partial class initdb
     {
         /// <inheritdoc />
@@ -174,9 +174,11 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Data.Entities.Tenant", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Identifier")
                         .IsRequired()
@@ -193,27 +195,27 @@ namespace Core.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("908d6712-e64e-4303-9f73-510fd6dad109"),
+                            Id = 1,
+                            Identifier = "default",
+                            Name = "Default"
+                        },
+                        new
+                        {
+                            Id = 2,
                             Identifier = "tenant1",
                             Name = "Tenant 1"
                         },
                         new
                         {
-                            Id = new Guid("0966b9f3-27f1-48c4-b8c3-897508ecc055"),
+                            Id = 3,
                             Identifier = "tenant2",
                             Name = "Tenant 2"
                         },
                         new
                         {
-                            Id = new Guid("d0bcbbaf-69fc-4b63-adbf-c2fdecaeda36"),
+                            Id = 4,
                             Identifier = "tenant3",
                             Name = "Tenant 3"
-                        },
-                        new
-                        {
-                            Id = new Guid("ea4c7b2e-609f-46b1-8389-8d3527312a6b"),
-                            Identifier = "tenant4",
-                            Name = "Tenant 4"
                         });
                 });
 

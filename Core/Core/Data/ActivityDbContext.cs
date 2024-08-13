@@ -24,14 +24,19 @@ namespace Core.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            var defaultTenant = new Tenant { Id = 1, Name = "Default", Identifier = "default" };
+            var tenantList = new List<Tenant> { defaultTenant };
+
+            for (int i = 2; i <= 4; i++)
+            {
+                tenantList.Add(new Tenant { Id = i, Name = $"Tenant {i - 1}", Identifier = $"tenant{i - 1}" });
+            }
+
             modelBuilder.Entity<Tenant>().HasData(
-                new Tenant { Id = Guid.NewGuid(), Name = "Tenant 1", Identifier = "tenant1" },
-                new Tenant { Id = Guid.NewGuid(), Name = "Tenant 2", Identifier = "tenant2" },
-                new Tenant { Id = Guid.NewGuid(), Name = "Tenant 3", Identifier = "tenant3" },
-                new Tenant { Id = Guid.NewGuid(), Name = "Tenant 4", Identifier = "tenant4" }
+                tenantList
             );
 
-            var tenantId = _httpContextAccessor?.HttpContext?.Items["TenantId"]?.ToString();
+            var tenantId = _httpContextAccessor?.HttpContext?.Items["TenantId"]?.ToString() ?? defaultTenant.Id.ToString();
 
             modelBuilder.Entity<Log>().HasQueryFilter(log => log.TenantId == tenantId);
             modelBuilder.Entity<Metric>().HasQueryFilter(metric => metric.TenantId == tenantId);

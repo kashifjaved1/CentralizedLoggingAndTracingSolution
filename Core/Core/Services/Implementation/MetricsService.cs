@@ -26,7 +26,7 @@ namespace Core.Services.Implementation
             _serviceName = _httpContextAccessor.HttpContext?.RequestServices.GetService<IWebHostEnvironment>()?.ApplicationName ?? "UnknownService";
         }
 
-        public void LogMetric(string metricName, double value, string serviceName)
+        public async void LogMetric(string metricName, double value, string serviceName)
         {
             var metric = new Metric
             {
@@ -39,7 +39,7 @@ namespace Core.Services.Implementation
             };
 
             _context.Metrics.Add(metric);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

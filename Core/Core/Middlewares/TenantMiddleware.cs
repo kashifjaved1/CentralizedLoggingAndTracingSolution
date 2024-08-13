@@ -1,4 +1,5 @@
-﻿using Core.Services.Interfaces;
+﻿using Core.Data;
+using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Middlewares
@@ -14,7 +15,7 @@ namespace Core.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            _tenantService.SetTenant(context);
+            await _tenantService.SetTenant(context);
             
             await next(context);
         }
