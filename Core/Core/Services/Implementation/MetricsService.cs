@@ -1,29 +1,24 @@
-﻿using Core.Data;
-using Core.Data.Entities;
+﻿using Core.Data.Entities;
 using Core.Helpers;
 using Core.Services.Interfaces;
+using Core.UOW;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Services.Implementation
 {
     public class MetricsService : IMetricsService
     {
-        private readonly ActivityDbContext _context;
+        private readonly IUnitOfWork _uow;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _serviceName;
 
-        public MetricsService(ActivityDbContext context, IHttpContextAccessor httpContextAccessor)
+        public MetricsService(IHttpContextAccessor httpContextAccessor, IUnitOfWork uow)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
             _httpContextAccessor = httpContextAccessor;
             _serviceName = _httpContextAccessor.HttpContext?.RequestServices.GetService<IWebHostEnvironment>()?.ApplicationName ?? "UnknownService";
+            _uow = uow;
         }
 
         public async void LogMetric(string metricName, double value, string serviceName)
@@ -38,8 +33,9 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
 
-            _context.Metrics.Add(metric);
-            await _context.SaveChangesAsync();
+            await _uow.Repository<Metric>().AddAsync(metric);
+            //_context.Metrics.Add(metric);
+            //await _context.SaveChangesAsync();
         }
     }
 }

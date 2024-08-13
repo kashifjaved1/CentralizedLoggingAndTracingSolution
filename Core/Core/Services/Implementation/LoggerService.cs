@@ -10,20 +10,21 @@ using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Core.Helpers;
+using Core.UOW;
 
 namespace Core.Services.Implementation
 {
     public class LoggerService : ILoggerService
     {
-        private readonly ActivityDbContext _context;
+        private readonly IUnitOfWork _uow;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _serviceName;
 
-        public LoggerService(ActivityDbContext context, IHttpContextAccessor httpContextAccessor)
+        public LoggerService(IHttpContextAccessor httpContextAccessor, IUnitOfWork uow)
         {
-            _context = context;
             _httpContextAccessor = httpContextAccessor;
             _serviceName = _httpContextAccessor.HttpContext?.RequestServices.GetService<IWebHostEnvironment>()?.ApplicationName ?? "UnknownService";
+            _uow = uow;
         }
 
         public async void LogInformation(string message)
@@ -37,8 +38,10 @@ namespace Core.Services.Implementation
                 LogLevel = "Information",
                 Timestamp = DateTime.UtcNow
             };
-            _context.Logs.Add(log);
-            await _context.SaveChangesAsync();
+
+            await _uow.Repository<Log>().AddAsync(log);
+            //_context.Logs.Add(log);
+            //await _context.SaveChangesAsync();
         }
 
         public async void LogError(string message)
@@ -52,8 +55,10 @@ namespace Core.Services.Implementation
                 LogLevel = "Error",
                 Timestamp = DateTime.UtcNow
             };
-            _context.Logs.Add(log);
-            await _context.SaveChangesAsync();
+
+            await _uow.Repository<Log>().AddAsync(log);
+            //_context.Logs.Add(log);
+            //await _context.SaveChangesAsync();
         }
 
         public async void Trace(string message)
@@ -65,8 +70,10 @@ namespace Core.Services.Implementation
                 Message = $"{_serviceName}: {message}",
                 Timestamp = DateTime.UtcNow
             };
-            _context.Traces.Add(trace);
-            await _context.SaveChangesAsync();
+
+            await _uow.Repository<Trace>().AddAsync(trace);
+            //_context.Traces.Add(trace);
+            //await _context.SaveChangesAsync();
         }
     }
 

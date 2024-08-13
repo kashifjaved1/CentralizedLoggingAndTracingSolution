@@ -3,6 +3,7 @@ using Core.Filters;
 using Core.Middlewares;
 using Core.Services.Implementation;
 using Core.Services.Interfaces;
+using Core.UOW;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Trace;
@@ -31,22 +32,27 @@ services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 services.AddTransient<TenantMiddleware>();
 services.AddTransient<ExceptionMiddleware>();
 services.AddTransient<RequestLoggingMiddleware>();
 services.AddTransient<ResponseLoggingMiddleware>();
 services.AddTransient<MetricsLoggingMiddleware>();
+services.AddTransient<AutoSaveChangesMiddleware>();
 
 services.AddDbContext<ActivityDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("Default")));
+
 services.AddTransient<ILoggerService>(provider =>
-    new LoggerService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+    new LoggerService(provider.GetRequiredService<IHttpContextAccessor>(), provider.GetRequiredService<IUnitOfWork>()));
 services.AddTransient<IMetricsService>(provider =>
-    new MetricsService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+    new MetricsService(provider.GetRequiredService<IHttpContextAccessor>(), provider.GetRequiredService<IUnitOfWork>()));
 services.AddTransient<IRequestResponseService>(provider =>
-    new RequestResponseService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+    new RequestResponseService(provider.GetRequiredService<IHttpContextAccessor>(), provider.GetRequiredService<IUnitOfWork>()));
 services.AddTransient<ITenantService>(provider =>
-    new TenantService(provider.GetRequiredService<ActivityDbContext>()));
+    new TenantService(provider.GetRequiredService<IUnitOfWork>()));
+
 services.AddHttpContextAccessor();
 
 services.AddOpenTelemetry().WithTracing(bldr => bldr
@@ -74,6 +80,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<MetricsLoggingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ResponseLoggingMiddleware>();
+app.UseMiddleware<AutoSaveChangesMiddleware>();
 
 app.UseAuthorization();
 

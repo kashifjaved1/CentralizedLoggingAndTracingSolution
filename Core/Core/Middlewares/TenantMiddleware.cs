@@ -15,7 +15,7 @@ namespace Core.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            await _tenantService.SetTenant(context);
+            _tenantService.SetTenant(context);
             
             await next(context);
         }

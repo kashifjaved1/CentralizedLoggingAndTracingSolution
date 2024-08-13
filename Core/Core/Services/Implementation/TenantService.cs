@@ -4,32 +4,33 @@ using Core.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Core.Data.Entities;
 using Core.Helpers;
+using Core.UOW;
 
 namespace Core.Services.Implementation
 {
     public class TenantService : ITenantService
     {
-        private readonly ActivityDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public TenantService(ActivityDbContext context)
+        public TenantService(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
-        public async Task<List<Tenant>> GetTenants()
+        public async Task<List<Tenant>> GetTenantsAsync()
         {
-            return await _context.Tenants.Where(x => !StringHelper.AreEquals(x.Identifier, "default")).OrderBy(x => x.Id).ToListAsync();
+            return await _uow.Repository<Tenant>().GetAllAsync(x => x.Identifier != "default", x => x.Id);
         }
 
         public async void SetTenant(HttpContext httpContext)
         {
-            //var abc = httpContext.Session.GetString("TenantId"); // when application will restart, then it'll be null.
+            //var tenantId = httpContext.Session.GetString("TenantId"); // when application will restart, then it'll be null.
             var tenantId = httpContext.Request.Cookies["TenantId"];
 
             if (!string.IsNullOrEmpty(tenantId))
             {
                 var id = int.Parse(tenantId);
-                var tenant = await _context.Tenants.FirstOrDefaultAsync(t => t.Id == id);
+                var tenant = await _uow.Repository<Tenant>().GetByIdAsync(id);
                 if (tenant != null)
                 {
                     httpContext.Items["TenantId"] = tenant.Id.ToString();

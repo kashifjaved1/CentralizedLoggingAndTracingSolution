@@ -1,7 +1,7 @@
 ﻿@using Core.Services.Interfaces
 @inject ITenantService TenantService
 @{
-    var tenants = await TenantService.GetTenants();
+    var tenants = await TenantService.GetTenantsAsync();
 }
 
 <!DOCTYPE html>
