@@ -1,12 +1,6 @@
 ﻿using Core.Data;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Repositories.GenericRepository
 {
@@ -31,14 +25,26 @@ namespace Core.Repositories.GenericRepository
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<List<T>> GetAllAsync<TKey>(Expression<Func<T, bool>> filter, Expression<Func<T, TKey>> keySelector = null)
+        public async Task<List<T>> GetAllOrderedAsync<TKey>(Expression<Func<T, bool>> filter = null,
+            Expression<Func<T, TKey>> keySelector = null,
+            bool orderByDescending = false)
         {
-            if (keySelector is null)
+            if (keySelector is null && filter is not null)
             {
                 return await _dbSet.Where(filter).ToListAsync();
             }
 
-            return await _dbSet.Where(filter).OrderBy(keySelector).ToListAsync();
+            if (filter is null && keySelector is not null)
+            {
+                if (orderByDescending)
+                {
+                    return await _dbSet.OrderByDescending(keySelector).ToListAsync();
+                }
+
+                return await _dbSet.OrderBy(keySelector).ToListAsync();
+            }
+
+            return await _dbSet.ToListAsync();
         }
 
         public async Task AddAsync(T entity)

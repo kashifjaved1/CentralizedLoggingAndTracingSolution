@@ -7,5 +7,6 @@ namespace Core.Services.Interfaces
     {
         void SetTenant(HttpContext context);
         Task<List<Tenant>> GetTenantsAsync();
+        Task<bool> IsSelectedTenantAsync(string tenantIdFromCookie);
     }
 }

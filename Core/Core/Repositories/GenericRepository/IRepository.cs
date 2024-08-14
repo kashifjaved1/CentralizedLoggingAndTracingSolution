@@ -11,7 +11,7 @@ namespace Core.Repositories.GenericRepository
     {
         Task<T> GetByIdAsync(int id);
         Task<List<T>> GetAllAsync();
-        Task<List<T>> GetAllAsync<TKey>(Expression<Func<T, bool>> filter, Expression<Func<T, TKey>> keySelector = null);
+        Task<List<T>> GetAllOrderedAsync<TKey>(Expression<Func<T, bool>> filter = null, Expression<Func<T, TKey>> keySelector = null, bool orderByDescending = false);
         Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);
