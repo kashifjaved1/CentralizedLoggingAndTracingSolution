@@ -3,6 +3,7 @@ using Core.Filters;
 using Core.Middlewares;
 using Core.Services.Implementation;
 using Core.Services.Interfaces;
+using Core.UOW;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Trace;
 
@@ -16,13 +17,15 @@ services.AddControllers(options =>
     options.Filters.Add<ActionFilter>();
 });
 
+services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 services.AddDbContext<ActivityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 services.AddTransient<ILoggerService>(provider =>
-new LoggerService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+new LoggerService(provider.GetRequiredService<IHttpContextAccessor>(), provider.GetRequiredService<IUnitOfWork>()));
 services.AddTransient<IMetricsService>(provider =>
-    new MetricsService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+    new MetricsService(provider.GetRequiredService<IHttpContextAccessor>(), provider.GetRequiredService<IUnitOfWork>()));
 services.AddTransient<IRequestResponseService>(provider =>
-    new RequestResponseService(provider.GetRequiredService<ActivityDbContext>(), provider.GetRequiredService<IHttpContextAccessor>()));
+    new RequestResponseService(provider.GetRequiredService<IHttpContextAccessor>(), provider.GetRequiredService<IUnitOfWork>()));
 services.AddHttpContextAccessor();
 services.AddTransient<ExceptionMiddleware>();
 services.AddTransient<RequestLoggingMiddleware>();

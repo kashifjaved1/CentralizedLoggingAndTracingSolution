@@ -1,4 +1,6 @@
 ﻿using Core.Data;
+using Core.Data.Entities;
+using Core.UOW;
 using Microsoft.AspNetCore.Mvc;
 using UI.Controllers.Base;
 using UI.Data.ViewModels;
@@ -7,28 +9,27 @@ namespace UI.Controllers
 {
     public class RequestsController : BaseController
     {
-        private readonly ActivityDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public RequestsController(ActivityDbContext context)
+        public RequestsController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         public IActionResult Index()
         {
-            var requests = _context
-                .Requests
-                .OrderByDescending(r => r.Timestamp)
-                .Select(r => new RequestViewModel
+            var requests = _uow.Repository<Request>()
+                .GetAllOrdered(req => req.TenantId == TenantId, req => req.Timestamp, true)
+                .Select(request => new RequestViewModel
                 {
-                    Id = r.Id,
-                    RequestId = r.RequestId,
-                    ServiceName = r.ServiceName,
-                    Url = r.Url,
-                    Method = r.Method,
-                    Headers = r.Headers,
-                    Body = r.Body,
-                    Timestamp = r.Timestamp
+                    Id = request.Id,
+                    RequestId = request.RequestId,
+                    ServiceName = request.ServiceName,
+                    Url = request.Url,
+                    Method = request.Method,
+                    Headers = request.Headers,
+                    Body = request.Body,
+                    Timestamp = request.Timestamp
                 })
                 .ToList();
             return View(requests);
@@ -36,20 +37,19 @@ namespace UI.Controllers
 
         public IActionResult Details(int id)
         {
-            var request = _context.Requests
-                .Where(r => r.Id == id)
-                .Select(r => new RequestViewModel
-                {
-                    Id = r.Id,
-                    RequestId = r.RequestId,
-                    ServiceName = r.ServiceName,
-                    Url = r.Url,
-                    Method = r.Method,
-                    Headers = r.Headers,
-                    Body = r.Body,
-                    Timestamp = r.Timestamp
-                })
-                .FirstOrDefault();
+            var request = _uow.Repository<Request>()
+                .GetById(req => req.Id == id && req.TenantId == TenantId);
+            var requestViewModel = new RequestViewModel
+            {
+                Id = request.Id,
+                RequestId = request.RequestId,
+                ServiceName = request.ServiceName,
+                Url = request.Url,
+                Method = request.Method,
+                Headers = request.Headers,
+                Body = request.Body,
+                Timestamp = request.Timestamp
+            };
 
             if (request == null)
             {

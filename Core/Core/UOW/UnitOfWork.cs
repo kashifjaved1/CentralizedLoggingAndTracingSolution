@@ -39,6 +39,14 @@ namespace Core.UOW
             }
         }
 
+        public void Save()
+        {
+            if (_context.ChangeTracker.HasChanges())
+            {
+                var changesSaved = _context.SaveChanges() > 0;
+            }
+        }
+
         public void Dispose()
         {
             _context.Dispose();

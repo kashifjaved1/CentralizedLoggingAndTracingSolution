@@ -16,7 +16,7 @@ namespace Core.Middlewares
         {
             await next(context);
 
-            await _uow.SaveAsync();
+            _uow.Save();
         }
     }
 }

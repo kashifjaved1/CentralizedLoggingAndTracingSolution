@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Linq.Expressions;
 
 namespace Core.Repositories.GenericRepository
@@ -15,41 +16,65 @@ namespace Core.Repositories.GenericRepository
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public T GetById(int id)
         {
-            return await _dbSet.FindAsync(id);
+            return _dbSet.Find(id);
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public T GetById(Expression<Func<T, bool>> filter)
         {
-            return await _dbSet.ToListAsync();
-        }
-
-        public async Task<List<T>> GetAllOrderedAsync<TKey>(Expression<Func<T, bool>> filter = null,
-            Expression<Func<T, TKey>> keySelector = null,
-            bool orderByDescending = false)
-        {
-            if (keySelector is null && filter is not null)
+            if(filter is not null)
             {
-                return await _dbSet.Where(filter).ToListAsync();
+                return _dbSet.FirstOrDefault(filter);
             }
 
-            if (filter is null && keySelector is not null)
+            return null;
+        }
+
+        public List<T> GetAll(Expression<Func<T, bool>> filter = null)
+        {
+            return filter != null
+                ? _dbSet.Where(filter).ToList()
+                : _dbSet.ToList();
+        }
+
+        public List<T> GetAllOrdered<TKey>(
+            Expression<Func<T, bool>> filter = null,
+            Expression<Func<T, TKey>> orderByKeySelector = null,
+            bool orderByDescending = false)
+        {
+            if (filter is not null)
+            {
+                if (orderByKeySelector is null)
+                {
+                    return _dbSet.Where(filter).ToList();
+                }
+
+                if (orderByDescending)
+                {
+                    return _dbSet.Where(filter).OrderByDescending(orderByKeySelector).ToList();
+                }
+
+                return _dbSet.Where(filter).OrderBy(orderByKeySelector).ToList();
+            }
+
+            if (orderByKeySelector is not null)
             {
                 if (orderByDescending)
                 {
-                    return await _dbSet.OrderByDescending(keySelector).ToListAsync();
+                    return _dbSet.OrderByDescending(orderByKeySelector).ToList();
                 }
 
-                return await _dbSet.OrderBy(keySelector).ToListAsync();
+                return _dbSet.OrderBy(orderByKeySelector).ToList();
             }
 
-            return await _dbSet.ToListAsync();
+            return _dbSet.ToList();
         }
 
-        public async Task AddAsync(T entity)
+
+        public void Add(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            _dbSet.Add(entity);
         }
 
         public void Update(T entity)

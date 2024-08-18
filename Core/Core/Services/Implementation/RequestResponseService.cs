@@ -29,25 +29,24 @@ namespace Core.Services.Implementation
             _uow = uow;
         }
 
-        public async void LogRequest(Data.Entities.Request request)
+        public void LogRequest(Data.Entities.Request request)
         {
             request.ServiceName = _serviceName;
             request.RequestId = SessionHelper.GetRequestId(_httpContextAccessor);
             request.TenantId = SessionHelper.GetTenantId(_httpContextAccessor);
 
-            await _uow.Repository<Data.Entities.Request>().AddAsync(request);
+            _uow.Repository<Data.Entities.Request>().Add(request);
             //_context.Requests.Add(request);
-            //await _context.SaveChangesAsync();
+            //_context.SaveChanges();
         }
 
-        public async void LogResponse(Response response)
+        public void LogResponse(Response response)
         {
             response.RequestId = SessionHelper.GetRequestId(_httpContextAccessor);
             response.TenantId = SessionHelper.GetTenantId(_httpContextAccessor);
-
-            await _uow.Repository<Response>().AddAsync(response);
+            _uow.Repository<Response>().Add(response);
             //_context.Responses.Add(response);
-            //await _context.SaveChangesAsync();
+            //_context.SaveChanges();
         }
     }
 }

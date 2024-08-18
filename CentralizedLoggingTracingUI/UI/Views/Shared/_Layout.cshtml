@@ -3,7 +3,7 @@
 @inject ITenantService TenantService
 @{
     var tenantIdFromCookie = httpContextAccessor?.HttpContext?.Request.Cookies["TenantId"];
-    var tenants = await TenantService.GetTenantsAsync();
+    var tenants = TenantService.GetTenants();
 }
 
 <!DOCTYPE html>
@@ -79,6 +79,10 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
+            // console.log("tenant id from cookie: " + @tenantIdFromCookie);
+
+            $('#tenantSelect').val(@tenantIdFromCookie);
+
             $('#tenantSelect').change(function () {
                 var tenantId = $(this).val();
                 $.ajax({

@@ -11,5 +11,6 @@ namespace Core.UOW
     {
         IRepository<TEntity> Repository<TEntity>() where TEntity : class;
         Task SaveAsync();
+        void Save();
     }
 }

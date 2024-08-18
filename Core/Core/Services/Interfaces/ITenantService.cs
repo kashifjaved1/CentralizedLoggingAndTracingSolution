@@ -6,7 +6,8 @@ namespace Core.Services.Interfaces
     public interface ITenantService
     {
         void SetTenant(HttpContext context);
-        Task<List<Tenant>> GetTenantsAsync();
-        Task<bool> IsSelectedTenantAsync(string tenantIdFromCookie);
+        void SetTenant(HttpContext httpContext, string tenantId);
+        List<Tenant> GetTenants();
+        bool IsSelectedTenant(string tenantIdFromCookie);
     }
 }

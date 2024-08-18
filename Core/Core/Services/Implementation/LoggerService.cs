@@ -27,7 +27,7 @@ namespace Core.Services.Implementation
             _uow = uow;
         }
 
-        public async void LogInformation(string message)
+        public void LogInformation(string message)
         {
             var log = new Log
             {
@@ -39,12 +39,12 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
 
-            await _uow.Repository<Log>().AddAsync(log);
+            _uow.Repository<Log>().Add(log);
             //_context.Logs.Add(log);
-            //await _context.SaveChangesAsync();
+            //await _context.SaveChanges();
         }
 
-        public async void LogError(string message)
+        public void LogError(string message)
         {
             var log = new Log
             {
@@ -56,12 +56,12 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
 
-            await _uow.Repository<Log>().AddAsync(log);
+            _uow.Repository<Log>().Add(log);
             //_context.Logs.Add(log);
-            //await _context.SaveChangesAsync();
+            //await _context.SaveChanges();
         }
 
-        public async void Trace(string message)
+        public void Trace(string message)
         {
             var trace = new Trace
             {
@@ -71,9 +71,9 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
 
-            await _uow.Repository<Trace>().AddAsync(trace);
+            _uow.Repository<Trace>().Add(trace);
             //_context.Traces.Add(trace);
-            //await _context.SaveChangesAsync();
+            //await _context.SaveChanges();
         }
     }
 

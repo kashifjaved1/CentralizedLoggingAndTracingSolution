@@ -1,5 +1,4 @@
-﻿using Core.Data;
-using Core.Services.Interfaces;
+﻿using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Middlewares

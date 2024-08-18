@@ -28,13 +28,15 @@ namespace Core.Middlewares
 
             try
             {
-                await next(context);
-            }
-            finally
-            {
                 stopwatch.Stop();
 
                 _metricsService.LogMetric("ResponseTime", stopwatch.ElapsedMilliseconds, null);
+
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

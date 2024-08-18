@@ -16,40 +16,38 @@ namespace UI.Controllers
             _uow = uow;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var logs = await _uow.Repository<Log>().GetAllOrderedAsync(null, log => log.Timestamp, orderByDescending: true);
-            var logViewModel = logs
-            .Select(log => new LogViewModel
-            {
-                Id = log.Id,
-                RequestId = log.RequestId,
-                Message = log.Message,
-                LogLevel = log.LogLevel,
-                Timestamp = log.Timestamp
-            }).ToList();
-
-            return View(logViewModel);
-        }
-
-        public async Task<IActionResult> Details(Guid requestId)
-        {
-            var logs = await _uow.Repository<Log>().GetAllOrderedAsync(null, log => log.Timestamp, orderByDescending: true);
-            var logViewModel = logs
-                .OrderByDescending(log => log.Timestamp)
+            var logs = _uow.Repository<Log>()
+                .GetAllOrdered(log => log.TenantId == TenantId, log => log.Timestamp, orderByDescending: true)
                 .Select(log => new LogViewModel
                 {
                     Id = log.Id,
+                    RequestId = log.RequestId,
                     Message = log.Message,
                     LogLevel = log.LogLevel,
                     Timestamp = log.Timestamp
-                })
-                .ToList();
+                }).ToList();
+
+            return View(logs);
+        }
+
+        public IActionResult Details(Guid requestId)
+        {
+            var log = _uow.Repository<Log>()
+                .GetById(log => log.RequestId == requestId && log.TenantId == TenantId);
+
+            var logViewModel = new LogViewModel
+            {
+                Id = log.Id,
+                Message = log.Message,
+                LogLevel = log.LogLevel,
+                Timestamp = log.Timestamp
+            };
 
 
-            var traces = await _uow.Repository<Trace>().GetAllOrderedAsync(trace => trace.RequestId == requestId, log => log.Timestamp, orderByDescending: true);
-            var traceViewModel = traces
-                .OrderByDescending(log => log.Timestamp)
+            var traces = _uow.Repository<Trace>()
+                .GetAllOrdered(filter: trace => trace.RequestId == requestId && trace.TenantId == TenantId, orderByKeySelector: log => log.Timestamp, orderByDescending: true)
                 .Select(trace => new TraceViewModel
                 {
                     Id = trace.Id,
@@ -60,8 +58,8 @@ namespace UI.Controllers
 
             var model = new LogDetailViewModel
             {
-                Logs = logViewModel,
-                Traces = traceViewModel
+                Log = logViewModel,
+                Traces = traces
             };
 
             return View(model);

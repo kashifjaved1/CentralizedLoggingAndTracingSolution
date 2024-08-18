@@ -33,7 +33,7 @@ namespace Core.Services.Implementation
                 Timestamp = DateTime.UtcNow
             };
 
-            await _uow.Repository<Metric>().AddAsync(metric);
+            _uow.Repository<Metric>().Add(metric);
             //_context.Metrics.Add(metric);
             //await _context.SaveChangesAsync();
         }

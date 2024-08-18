@@ -4,12 +4,12 @@ namespace UI.Controllers.Base
 {
     public class BaseController : Controller
     {
-        protected int TenantId
+        protected string TenantId
         {
             get
             {
                 var tenantId = HttpContext.Request.Cookies["TenantId"];
-                return tenantId != null ? int.Parse(tenantId) : 1;
+                return tenantId ?? 1.ToString();
             }
         }
     }

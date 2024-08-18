@@ -14,15 +14,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var log in Model.Logs)
-        {
-            <tr>
-                <td>@log.Id</td>
-                <td>@log.Message</td>
-                <td>@log.LogLevel</td>
-                <td>@log.Timestamp</td>
-            </tr>
-        }
+        <tr>
+            <td>@Model.Log.Id</td>
+            <td>@Model.Log.Message</td>
+            <td>@Model.Log.LogLevel</td>
+            <td>@Model.Log.Timestamp</td>
+        </tr>
     </tbody>
 </table>
 
